@@ -88,7 +88,7 @@ export function TodayClient({
     return (
       <section>
         <div className="mb-4 flex items-center justify-between">
-          <h2 className="font-semibold text-zinc-100">Today's Slate</h2>
+          <h2 className="font-semibold text-zinc-100">Today&apos;s Slate</h2>
           <Sk className="h-3 w-24" />
         </div>
         <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
@@ -113,7 +113,7 @@ export function TodayClient({
   return (
     <section>
       <div className="mb-4 flex items-center justify-between">
-        <h2 className="font-semibold text-zinc-100">Today's Slate</h2>
+        <h2 className="font-semibold text-zinc-100">Today&apos;s Slate</h2>
         {data && (
           <span className="text-xs text-zinc-500">
             {formatSlateDate(data.slate_date)}
