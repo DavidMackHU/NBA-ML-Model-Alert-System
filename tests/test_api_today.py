@@ -155,9 +155,7 @@ def test_today_returns_empty_slate_when_no_games(client: TestClient) -> None:
     assert body["games"] == []
 
 
-def test_today_returns_all_games_even_without_edges(
-    client: TestClient, db: Session
-) -> None:
+def test_today_returns_all_games_even_without_edges(client: TestClient, db: Session) -> None:
     for i in range(3):
         _add_game(db, gid=f"g{i}")
     db.commit()
@@ -169,9 +167,7 @@ def test_today_returns_all_games_even_without_edges(
     assert all(g["best_edge"] is None for g in body["games"])
 
 
-def test_today_picks_highest_ev_per_game(
-    client: TestClient, db: Session
-) -> None:
+def test_today_picks_highest_ev_per_game(client: TestClient, db: Session) -> None:
     game = _add_game(db)
     _add_alert(db, game, ev_pct=0.03)
     _add_alert(db, game, ev_pct=0.08)
@@ -184,9 +180,7 @@ def test_today_picks_highest_ev_per_game(
     assert body["games"][0]["best_edge"]["ev_pct"] == pytest.approx(0.08)
 
 
-def test_today_excludes_stale_alerts(
-    client: TestClient, db: Session
-) -> None:
+def test_today_excludes_stale_alerts(client: TestClient, db: Session) -> None:
     game = _add_game(db)
     _add_alert(db, game, ev_pct=0.06, alert_time=_stale())
     db.commit()
@@ -197,9 +191,7 @@ def test_today_excludes_stale_alerts(
     assert body["games"][0]["best_edge"] is None
 
 
-def test_today_excludes_alerts_failing_pin_sanity(
-    client: TestClient, db: Session
-) -> None:
+def test_today_excludes_alerts_failing_pin_sanity(client: TestClient, db: Session) -> None:
     game = _add_game(db)
     # model says bet home (model_p > dk_implied_p) but Pin says fade (pin < dk)
     _add_alert(db, game, model_p=0.60, dk_implied_p=0.48, pin_implied_p=0.45)
@@ -210,9 +202,7 @@ def test_today_excludes_alerts_failing_pin_sanity(
     assert body["games"][0]["best_edge"] is None
 
 
-def test_today_excludes_settled_alerts(
-    client: TestClient, db: Session
-) -> None:
+def test_today_excludes_settled_alerts(client: TestClient, db: Session) -> None:
     game = _add_game(db)
     _add_alert(db, game, ev_pct=0.07, status="settled")
     db.commit()
@@ -222,9 +212,7 @@ def test_today_excludes_settled_alerts(
     assert body["games"][0]["best_edge"] is None
 
 
-def test_today_excludes_games_outside_slate_window(
-    client: TestClient, db: Session
-) -> None:
+def test_today_excludes_games_outside_slate_window(client: TestClient, db: Session) -> None:
     _add_game(db, tipoff=_in_window(), gid="today")
     _add_game(db, tipoff=_out_of_window(), gid="yesterday")
     db.commit()
@@ -234,9 +222,7 @@ def test_today_excludes_games_outside_slate_window(
     assert len(body["games"]) == 1
 
 
-def test_today_best_edge_is_per_game_not_global(
-    client: TestClient, db: Session
-) -> None:
+def test_today_best_edge_is_per_game_not_global(client: TestClient, db: Session) -> None:
     now_et = datetime.datetime.now(_ET)
     t1 = (
         datetime.datetime.combine(now_et.date(), datetime.time(19, 0))
@@ -268,9 +254,7 @@ def test_today_response_cache_header_present(client: TestClient) -> None:
     assert "max-age=30" in r.headers["cache-control"]
 
 
-def test_today_games_sorted_by_tipoff(
-    client: TestClient, db: Session
-) -> None:
+def test_today_games_sorted_by_tipoff(client: TestClient, db: Session) -> None:
     now_et = datetime.datetime.now(_ET)
     t_early = (
         datetime.datetime.combine(now_et.date(), datetime.time(19, 0))

@@ -58,10 +58,7 @@ def main(
         ev = _fmt(s.mean_ev)
         roi = _pct(s.roi)
         wr = f"{s.win_rate * 100:.1f}%"
-        print(
-            f"| {label} | {s.n_bets} | {s.n_settled} "
-            f"| {clv} | {ev} | {roi} | {wr} |"
-        )
+        print(f"| {label} | {s.n_bets} | {s.n_settled} | {clv} | {ev} | {roi} | {wr} |")
 
     print()
     print(

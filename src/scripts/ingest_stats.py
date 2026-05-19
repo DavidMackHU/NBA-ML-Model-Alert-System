@@ -20,7 +20,11 @@ async def run() -> None:
         except httpx.TimeoutException:
             log.warning("stats_ingestion_skipped", reason="NBA Stats API timeout after retries")
         except httpx.HTTPStatusError as exc:
-            log.warning("stats_ingestion_skipped", reason="NBA Stats API error", status=exc.response.status_code)
+            log.warning(
+                "stats_ingestion_skipped",
+                reason="NBA Stats API error",
+                status=exc.response.status_code,
+            )
 
 
 def main() -> None:

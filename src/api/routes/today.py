@@ -33,9 +33,7 @@ def _slate_window_naive_utc(
         .replace(tzinfo=None)
     )
     end = (
-        datetime.datetime.combine(
-            slate_date + datetime.timedelta(days=1), datetime.time(6, 0)
-        )
+        datetime.datetime.combine(slate_date + datetime.timedelta(days=1), datetime.time(6, 0))
         .replace(tzinfo=_ET)
         .astimezone(utc)
         .replace(tzinfo=None)
@@ -71,9 +69,7 @@ def _best_alerts_by_game(
             Alert.status == "active",
             Alert.alert_time >= stale_cutoff,
             # Same-sign check without func.sign() — works in SQLite and Postgres
-            (Alert.model_p - Alert.dk_implied_p)
-            * (Alert.pin_implied_p - Alert.dk_implied_p)
-            > 0,
+            (Alert.model_p - Alert.dk_implied_p) * (Alert.pin_implied_p - Alert.dk_implied_p) > 0,
         )
         .subquery()
     )
