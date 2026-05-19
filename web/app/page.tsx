@@ -1,12 +1,5 @@
-import type { Metadata } from "next";
-import { LiveFeed } from "./components/LiveFeed";
+import { redirect } from "next/navigation";
 
-export const metadata: Metadata = {
-  title: "Live Alerts | NBA +EV Alert System",
-  description:
-    "Real-time NBA candidate edge alerts — moneyline and player props where model probability diverges from market pricing.",
-};
-
-export default function HomePage() {
-  return <LiveFeed />;
+export default function Home() {
+  redirect("/today");
 }

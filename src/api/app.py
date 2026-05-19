@@ -5,7 +5,7 @@ from slowapi.errors import RateLimitExceeded
 from slowapi.middleware import SlowAPIMiddleware
 
 from src.api.limiter import limiter
-from src.api.routes import alerts, backtest, clv, health, stream
+from src.api.routes import alerts, backtest, clv, health, stream, today
 from src.config.settings import Settings
 
 _settings = Settings()
@@ -34,3 +34,4 @@ app.include_router(clv.router, prefix="/api")
 app.include_router(backtest.router, prefix="/api")
 app.include_router(health.router, prefix="/api")
 app.include_router(stream.router, prefix="/api")
+app.include_router(today.router, prefix="/api")

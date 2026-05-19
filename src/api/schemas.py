@@ -117,3 +117,35 @@ class BacktestResponse(BaseModel):
 class HealthResponse(BaseModel):
     status: str
     db: str
+
+
+class BestEdge(BaseModel):
+    alert_id: uuid.UUID
+    market: str
+    selection: str
+    ev_pct: float
+    model_p: float
+    dk_implied_p: float
+    pin_implied_p: float
+    dk_price: int
+    pin_price: int
+    edge_pin_vs_dk: float
+    alert_time: datetime.datetime
+
+
+class TodayGame(BaseModel):
+    game_id: int
+    home_team: str
+    away_team: str
+    tipoff_utc: datetime.datetime
+    tipoff_local_et: datetime.datetime
+    status: str
+    home_score: int | None
+    away_score: int | None
+    best_edge: BestEdge | None
+
+
+class TodaySlateResponse(BaseModel):
+    slate_date: datetime.date
+    games: list[TodayGame]
+    generated_at: datetime.datetime

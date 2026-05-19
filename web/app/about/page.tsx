@@ -120,6 +120,32 @@ export default function AboutPage() {
         </p>
       </Card>
 
+      {/* ── Today's Slate ──────────────────────────────────────────── */}
+      <Card title="Today's Slate">
+        <p>
+          The Today tab shows every NBA game on the current slate alongside the
+          single highest-EV candidate edge per game — if one exists and passes
+          quality filters.
+        </p>
+        <p>
+          An edge appears only when all three conditions hold: the alert is{" "}
+          <span className="font-medium text-zinc-100">active</span> (not yet
+          settled), it was generated within the last 6 hours, and Pinnacle
+          confirms the model&apos;s direction — i.e.,{" "}
+          <span className="font-mono text-xs text-zinc-300">
+            pin_implied_p
+          </span>{" "}
+          is below the DraftKings implied probability for the same selection. If
+          no alert clears those filters the card shows &ldquo;No current
+          edge.&rdquo;
+        </p>
+        <p className="text-xs text-zinc-500">
+          The page refreshes automatically every 60 seconds. Server-rendered
+          data is cached for 30 seconds at the CDN edge — the first load is
+          always fast even before client-side hydration.
+        </p>
+      </Card>
+
       {/* ── Data sources ───────────────────────────────────────────── */}
       <Card title="Data sources &amp; limitations">
         <div className="space-y-4">
