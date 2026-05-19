@@ -58,20 +58,25 @@ NBA_TEAM_NAMES: dict[str, str] = {
 
 async def _get(client: httpx.AsyncClient, endpoint: str, params: dict[str, Any]) -> dict:
     url = f"{BASE_URL}/{endpoint}"
-    for attempt in range(3):
+    for attempt in range(4):
         try:
-            resp = await client.get(url, params=params, headers=NBA_STATS_HEADERS, timeout=30.0)
+            resp = await client.get(url, params=params, headers=NBA_STATS_HEADERS, timeout=60.0)
             resp.raise_for_status()
             await asyncio.sleep(REQUEST_DELAY)
             return resp.json()
         except httpx.HTTPStatusError as exc:
             log.warning("nba_stats_http_error", status=exc.response.status_code, attempt=attempt)
-            if exc.response.status_code in (403, 429) and attempt < 2:
-                await asyncio.sleep(5 * (attempt + 1))
-            elif attempt == 2:
+            if exc.response.status_code in (403, 429) and attempt < 3:
+                await asyncio.sleep(10 * (attempt + 1))
+            elif attempt == 3:
                 raise
+        except httpx.TimeoutException:
+            log.warning("nba_stats_timeout", attempt=attempt)
+            if attempt == 3:
+                raise
+            await asyncio.sleep(15 * (attempt + 1))
         except httpx.TransportError:
-            if attempt == 2:
+            if attempt == 3:
                 raise
             await asyncio.sleep(2**attempt)
 
