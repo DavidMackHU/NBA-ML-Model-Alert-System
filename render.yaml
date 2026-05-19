@@ -1,0 +1,32 @@
+services:
+  - type: web
+    name: nba-ev-api
+    runtime: python
+    plan: free
+    region: oregon          # us-west-2 — same region as Supabase pooler endpoint
+    buildCommand: pip install uv && uv sync --no-dev
+    startCommand: >-
+      uv run uvicorn src.api.app:app
+      --host 0.0.0.0
+      --port $PORT
+      --workers 1
+      --proxy-headers
+      --forwarded-allow-ips=*
+    healthCheckPath: /api/health
+    envVars:
+      - key: PYTHON_VERSION
+        value: "3.11.9"
+      - key: EV_THRESHOLD
+        value: "0.03"
+      - key: LOG_LEVEL
+        value: INFO
+      - key: DATABASE_URL
+        sync: false           # Supabase Session Pooler URL — enter in Render dashboard
+      - key: ODDS_API_KEY
+        sync: false
+      - key: TELEGRAM_BOT_TOKEN
+        sync: false
+      - key: TELEGRAM_CHAT_ID
+        sync: false
+      - key: FRONTEND_ORIGIN
+        sync: false           # Your Vercel URL, e.g. https://nba-ev.vercel.app

@@ -1,0 +1,28 @@
+name: Post-Game Reconciliation
+
+on:
+  schedule:
+    # Every 30 min from 02:00–07:00 UTC (9pm–2am ET winter).
+    # Settles active alerts for games that just went final and records CLV.
+    - cron: "*/30 2-7 * * *"
+  workflow_dispatch:
+
+jobs:
+  reconcile:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: astral-sh/setup-uv@v4
+        with:
+          python-version: "3.11"
+
+      - name: Install dependencies
+        run: uv sync
+
+      - name: Run post-game reconciliation
+        env:
+          DATABASE_URL: ${{ secrets.DATABASE_URL }}
+        run: uv run python -m src.scripts.reconcile

@@ -1,0 +1,28 @@
+name: Daily Stats Sync
+
+on:
+  schedule:
+    # 11:00 UTC daily = 6am ET winter / 7am ET summer.
+    # Syncs box scores and advanced stats for yesterday's completed games.
+    - cron: "0 11 * * *"
+  workflow_dispatch:
+
+jobs:
+  stats-sync:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: astral-sh/setup-uv@v4
+        with:
+          python-version: "3.11"
+
+      - name: Install dependencies
+        run: uv sync
+
+      - name: Run stats ingestion
+        env:
+          DATABASE_URL: ${{ secrets.DATABASE_URL }}
+        run: uv run python -m src.scripts.ingest_stats

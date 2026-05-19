@@ -1,0 +1,33 @@
+name: Odds Poll + Edge Detection
+
+on:
+  schedule:
+    # Every hour during NBA game window: 9pm–5am UTC (4pm–midnight ET winter).
+    # 8 hrs/day × 2 markets × 30 days = 480 requests — fits free-tier 500/month.
+    # Slate-aware script exits early when no games are in DB for today.
+    - cron: "0 21-23,0-4 * * *"
+  workflow_dispatch:
+
+jobs:
+  odds-poll:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: astral-sh/setup-uv@v4
+        with:
+          python-version: "3.11"
+
+      - name: Install dependencies
+        run: uv sync
+
+      - name: Run odds ingestion + edge detection
+        env:
+          DATABASE_URL: ${{ secrets.DATABASE_URL }}
+          ODDS_API_KEY: ${{ secrets.ODDS_API_KEY }}
+          TELEGRAM_BOT_TOKEN: ${{ secrets.TELEGRAM_BOT_TOKEN }}
+          TELEGRAM_CHAT_ID: ${{ secrets.TELEGRAM_CHAT_ID }}
+          EV_THRESHOLD: ${{ secrets.EV_THRESHOLD }}
+        run: uv run python -m src.scripts.ingest_odds

@@ -1,0 +1,28 @@
+name: Injury Sync
+
+on:
+  schedule:
+    # Every 30 min from 15:00–04:00 UTC (10am–11pm ET winter).
+    # Rotowire RSS and NBA official injury report — no API key required.
+    - cron: "*/30 15-23,0-4 * * *"
+  workflow_dispatch:
+
+jobs:
+  injuries-sync:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: astral-sh/setup-uv@v4
+        with:
+          python-version: "3.11"
+
+      - name: Install dependencies
+        run: uv sync
+
+      - name: Run injury ingestion
+        env:
+          DATABASE_URL: ${{ secrets.DATABASE_URL }}
+        run: uv run python -m src.scripts.ingest_injuries
